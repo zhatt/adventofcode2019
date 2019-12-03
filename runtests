@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Use -b buffer and -v verbose, etc
+
+defaultCommand=discover
+
+for arg in "$@"; do
+	if [[ $arg == test* ]]; then
+		# Assume a test name is given so we don't want to do discover.
+		defaultCommand=
+	fi
+done
+
+python3 -m unittest $defaultCommand "$@"
+
