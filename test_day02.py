@@ -5,7 +5,7 @@ import day02
 import int_code_computer
 
 
-class TestDay01(unittest.TestCase):
+class TestDay02(unittest.TestCase):
 
     def test_parse_input(self):
         int_code = day02.parse_input("1,0,0,0,99")
