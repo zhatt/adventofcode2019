@@ -5,17 +5,12 @@ import aoc
 import int_code_computer
 
 
-def parse_input(line):
-    int_code = list(map(int, line.split(',')))
-    return int_code
-
-
 def part1(input_list):
     """
     Basic test of int code computer.
     """
 
-    int_code = parse_input(input_list[0])
+    int_code = int_code_computer.IntCodeComputer.parse_input(input_list[0])
 
     int_code[1] = 12
     int_code[2] = 2
@@ -35,7 +30,7 @@ def part2(input_list):
     noun = None  #for PyLint
     verb = None  #for PyLint
     for noun, verb in itertools.product(range(100), range(100)):
-        int_code = parse_input(input_list[0])
+        int_code = int_code_computer.IntCodeComputer.parse_input(input_list[0])
 
         int_code[1] = noun
         int_code[2] = verb
