@@ -47,6 +47,7 @@ class IntCodeComputer:
         self._ip += 2
 
     def _i_output(self, parameters):
+        self._output_generated = True
         self._output_stream.append(parameters[0])
         self._ip += 2
 
@@ -94,6 +95,7 @@ class IntCodeComputer:
         self._memory = int_code[:]
         self._ip = 0
         self._halted = False
+        self._output_generated = False
 
         if input_stream is not None:
             self._input_stream = input_stream
@@ -111,9 +113,16 @@ class IntCodeComputer:
     def get_memory(self, address):
         return self._memory[address]
 
-    def run(self):
+    def is_halted(self):
+        return self._halted
+
+    def run(self, until=HALT):
+        assert (until in {self.HALT, self.OUTPUT})
+
+        self._output_generated = False
         self._halted = False
-        while not self._halted:
+        while not self._halted and \
+                not (until == self.OUTPUT and self._output_generated):
             int_code = self._memory[self._ip]
 
             opcode = int_code % 100

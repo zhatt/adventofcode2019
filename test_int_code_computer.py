@@ -1,8 +1,10 @@
 import unittest
 
 from int_code_computer import IntCodeComputer
+
 # Extra alias for IntCodeComputer to make generated int code simpler.
 ICC = IntCodeComputer
+
 
 # pylint: disable=too-many-public-methods
 class TestIntCodeComputer(unittest.TestCase):
@@ -105,6 +107,25 @@ class TestIntCodeComputer(unittest.TestCase):
         computer = IntCodeComputer(int_code, input_stream, output_stream)
         computer.run()
         self.assertEqual([64, 14], output_stream)
+
+    def test_icc_until_output(self):
+        int_code = [
+            ICC.OUTPUT + ICC.MODE1_IMM, 64,  # Output 64.
+            ICC.OUTPUT + ICC.MODE1_IMM, 14,  # Output 14.
+            ICC.HALT,
+        ]
+
+        input_stream = []
+        output_stream = []
+
+        computer = IntCodeComputer(int_code, input_stream, output_stream)
+
+        computer.run(until=ICC.OUTPUT)
+        self.assertEqual([64], output_stream)
+        output_stream.pop()
+
+        computer.run(until=ICC.OUTPUT)
+        self.assertEqual([14], output_stream)
 
     def test_icc_jmp_if_true1(self):
         int_code = [
