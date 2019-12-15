@@ -1,8 +1,8 @@
 #!/bin/bash
 
 args=(
-	--disable=bad-whitespace
 	--disable=missing-docstring
+	--disable=duplicate-code
 )
 
 defaultFiles=*.py

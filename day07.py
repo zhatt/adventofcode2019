@@ -14,7 +14,7 @@ def parse_input(line):
 def get_phases_permutations(feedback_mode):
     if feedback_mode:
         # Permute 5 - 9.
-        generator =  permutations(range(5, 10))
+        generator = permutations(range(5, 10))
     else:
         # Permute 0 - 4.
         generator = permutations(range(0, 5))
