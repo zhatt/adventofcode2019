@@ -4,7 +4,7 @@ import aoc
 import day07
 
 
-class TestDay05(unittest.TestCase):
+class TestDay07(unittest.TestCase):
 
     def test_part1_example1(self):
         input_list = [
