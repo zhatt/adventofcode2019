@@ -1,6 +1,24 @@
 #!/usr/bin/env python3
 
-# See Day 2 and Day 5 for documentation.
+# See Day 2, 5 and 9 descriptions for documentation about opcodes.
+from collections import UserList
+
+
+class Memory(UserList):  # pylint: disable=too-many-ancestors
+    def __setitem__(self, index, value):
+        # Extend list to contain index.
+        self.data.extend([0] * (index - len(self.data) + 1))
+
+        self.data[index] = value
+
+    def __getitem__(self, index):
+        # We don't support slicing.
+        assert not isinstance(index, slice)
+        # Extend list to contain index.
+        self.data.extend([0] * (index - len(self.data) + 1))
+
+        return self.data[index]
+
 
 class IntCodeComputer:
     ADD = 1
@@ -11,19 +29,27 @@ class IntCodeComputer:
     JMP_IF_FALSE = 6
     LESS_THAN = 7
     EQUALS = 8
+    ADJUST_BASE = 9
     HALT = 99
 
     IS_DEST = 99
     MODE_POS = 0
     MODE_IMM = 1
+    MODE_RBASE = 2
+    MODE_SOURCE = {MODE_POS, MODE_IMM, MODE_RBASE}
+    MODE_DEST = {IS_DEST, MODE_POS, MODE_RBASE}
 
-    MODE1_POS = 0
+    MODE1_POS = 0  # MODE_POS * 100
     MODE2_POS = 0
     MODE3_POS = 0
 
-    MODE1_IMM = 100
+    MODE1_IMM = 100  # MODE_IMM * 100
     MODE2_IMM = 1000
     MODE3_IMM = 10000
+
+    MODE1_RBASE = 200  # MODE_RBASE * 100
+    MODE2_RBASE = 2000
+    MODE3_RBASE = 20000
 
     @staticmethod
     def parse_input(line):
@@ -77,23 +103,28 @@ class IntCodeComputer:
             self._memory[parameters[2]] = 0
         self._ip += 4
 
-    # opcode : (num_parameters, function)
+    def _i_adjust_base(self, parameters):
+        self._rb += parameters[0]
+        self._ip += 2
+
+    # opcode : ([num and type of parameters], function)
     _config = {
-        ADD: ([{MODE_POS, MODE_IMM}, {MODE_POS, MODE_IMM}, {IS_DEST, MODE_POS}], _i_add),
-        MULT: ([{MODE_POS, MODE_IMM}, {MODE_POS, MODE_IMM}, {IS_DEST, MODE_POS}], _i_mult),
-        INPUT: ([{IS_DEST, MODE_POS}], _i_input),
-        OUTPUT: ([{MODE_POS, MODE_IMM}], _i_output),
-        JMP_IF_TRUE: ([{MODE_POS, MODE_IMM}, {MODE_POS, MODE_IMM}], _i_jmp_if_true),
-        JMP_IF_FALSE: ([{MODE_POS, MODE_IMM}, {MODE_POS, MODE_IMM}], _i_jmp_if_false),
-        LESS_THAN: ([{MODE_POS, MODE_IMM}, {MODE_POS, MODE_IMM}, {IS_DEST, MODE_POS}],
-                    _i_less_than),
-        EQUALS: ([{MODE_POS, MODE_IMM}, {MODE_POS, MODE_IMM}, {IS_DEST, MODE_POS}], _i_equals),
+        ADD: ([MODE_SOURCE, MODE_SOURCE, MODE_DEST], _i_add),
+        MULT: ([MODE_SOURCE, MODE_SOURCE, MODE_DEST], _i_mult),
+        INPUT: ([MODE_DEST], _i_input),
+        OUTPUT: ([MODE_SOURCE], _i_output),
+        JMP_IF_TRUE: ([MODE_SOURCE, MODE_SOURCE], _i_jmp_if_true),
+        JMP_IF_FALSE: ([MODE_SOURCE, MODE_SOURCE], _i_jmp_if_false),
+        LESS_THAN: ([MODE_SOURCE, MODE_SOURCE, MODE_DEST], _i_less_than),
+        EQUALS: ([MODE_SOURCE, MODE_SOURCE, MODE_DEST], _i_equals),
+        ADJUST_BASE: ([MODE_SOURCE], _i_adjust_base),
         HALT: ([], _i_halt),
     }
 
     def __init__(self, int_code, input_stream=None, output_stream=None):
-        self._memory = int_code[:]
+        self._memory = Memory(int_code[:])
         self._ip = 0
+        self._rb = 0
         self._halted = False
         self._output_generated = False
 
@@ -108,7 +139,7 @@ class IntCodeComputer:
             self._output_stream = []
 
     def dump(self):
-        return self._memory[:]
+        return self._memory.copy()
 
     def get_memory(self, address):
         return self._memory[address]
@@ -142,11 +173,18 @@ class IntCodeComputer:
                 if mode == IntCodeComputer.MODE_POS and IntCodeComputer.IS_DEST in config[0][pnum]:
                     parameters.append(immediate_value)
 
+                if mode == IntCodeComputer.MODE_RBASE and IntCodeComputer.IS_DEST in \
+                        config[0][pnum]:
+                    parameters.append(self._rb + immediate_value)
+
                 elif mode == IntCodeComputer.MODE_POS:
                     parameters.append(self._memory[immediate_value])
 
                 elif mode == IntCodeComputer.MODE_IMM:
                     parameters.append(immediate_value)
+
+                elif mode == IntCodeComputer.MODE_RBASE:
+                    parameters.append(self._memory[self._rb + immediate_value])
 
                 else:
                     assert False

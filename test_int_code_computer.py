@@ -1,6 +1,7 @@
 import unittest
 
 from int_code_computer import IntCodeComputer
+from int_code_computer import Memory
 
 # Extra alias for IntCodeComputer to make generated int code simpler.
 ICC = IntCodeComputer
@@ -8,6 +9,20 @@ ICC = IntCodeComputer
 
 # pylint: disable=too-many-public-methods
 class TestIntCodeComputer(unittest.TestCase):
+
+    def test_memory(self):
+        memory = Memory([1, 2, 3])
+        self.assertEqual([1, 2, 3], memory)
+
+        memory[0] = 10
+        self.assertEqual([10, 2, 3], memory)
+
+        memory[5] = 15
+        self.assertEqual([10, 2, 3, 0, 0, 15], memory)
+
+        # Extend list by referencing past end.
+        _ = memory[15]
+        self.assertEqual(16, len(memory))
 
     def test_parse_input(self):
         int_code = IntCodeComputer.parse_input("1,0,0,0,99")
@@ -241,6 +256,33 @@ class TestIntCodeComputer(unittest.TestCase):
         memory = computer.dump()
         self.assertEqual(expected, memory)
 
+    def test_icc_add_rb1(self):
+        int_code = [
+            ICC.ADD + ICC.MODE1_RBASE + ICC.MODE2_POS + ICC.MODE3_POS, 0, 0, 0,  # 0
+            ICC.HALT,  # 4
+        ]
+        computer = IntCodeComputer(int_code)
+        computer.run()
+        memory = computer.dump()
+        self.assertEqual([402, 0, 0, 0, 99], memory)
+
+    def test_icc_add_rb2(self):
+        int_code = [
+            ICC.ADJUST_BASE + ICC.MODE1_IMM, 3,  # 0
+            ICC.ADJUST_BASE + ICC.MODE1_IMM, 6,  # 2
+            ICC.ADD + ICC.MODE1_RBASE + ICC.MODE2_IMM + ICC.MODE3_RBASE, 0, 3, 1,  # 4
+            ICC.HALT,  # 8
+            5, 0,  # 9
+        ]
+
+        expected = int_code[:]
+        expected[10] = 8
+
+        computer = IntCodeComputer(int_code)
+        computer.run()
+        memory = computer.dump()
+        self.assertEqual(expected, memory)
+
     def test_icc_day2_part1_example1(self):
         int_code = [1, 0, 0, 0, 99]
         computer = IntCodeComputer(int_code)
@@ -446,6 +488,43 @@ class TestIntCodeComputer(unittest.TestCase):
         computer = IntCodeComputer(int_code, input_stream, output_stream)
         computer.run()
         self.assertEqual([1001], output_stream)
+
+    def test_icc_day9_part1_example1(self):
+        int_code = [
+            109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99
+        ]
+        expected = int_code[:]
+        input_stream = []
+        output_stream = []
+        computer = IntCodeComputer(int_code, input_stream, output_stream)
+        computer.run()
+        self.assertEqual(expected, output_stream)
+
+    def test_icc_day9_part1_example2(self):
+        int_code = [
+            1102, 34915192, 34915192, 7, 4, 7, 99, 0
+        ]
+
+        # int_code[1] * int_code[1]
+        expected_output_stream = [1219070632396864]
+        input_stream = []
+        output_stream = []
+        computer = IntCodeComputer(int_code, input_stream, output_stream)
+        computer.run()
+        self.assertEqual(expected_output_stream, output_stream)
+
+    def test_icc_day9_part1_example3(self):
+        int_code = [
+            104, 1125899906842624, 99
+        ]
+
+        # int_code[1]
+        expected_output_stream = [1125899906842624]
+        input_stream = []
+        output_stream = []
+        computer = IntCodeComputer(int_code, input_stream, output_stream)
+        computer.run()
+        self.assertEqual(expected_output_stream, output_stream)
 
 
 if __name__ == '__main__':
