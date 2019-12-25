@@ -148,17 +148,24 @@ class IntCodeComputer:
         return self._halted
 
     def run(self, until=HALT):
-        assert (until in {self.HALT, self.OUTPUT})
+        assert (until in {self.HALT, self.OUTPUT, self.INPUT})
 
         self._output_generated = False
         self._halted = False
+        need_input = False
         while not self._halted and \
-                not (until == self.OUTPUT and self._output_generated):
+                not (until == self.OUTPUT and self._output_generated) and \
+                not (until == self.INPUT and need_input):
+
             int_code = self._memory[self._ip]
 
             opcode = int_code % 100
             int_code //= 100
             assert opcode in self._config
+
+            if opcode == IntCodeComputer.INPUT and not self._input_stream and until == self.INPUT:
+                need_input = True
+                break
 
             config = self._config[opcode]
 

@@ -3,6 +3,8 @@
 args=(
 	--disable=missing-docstring
 	--disable=duplicate-code
+	# pylint doesn't understand @dataclass classes.
+	--disable=no-member
 )
 
 defaultFiles=*.py
