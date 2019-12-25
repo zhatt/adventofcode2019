@@ -70,7 +70,6 @@ class Ship:
         min_coord = aoc.min_bound_coord(*list(self._hull.keys()))
         max_coord = aoc.max_bound_coord(*list(self._hull.keys()))
 
-        print(min_coord, max_coord)
         output_string = ""
         for y_index in range(max_coord.y_val, min_coord.y_val - 1, -1):
             for x_index in range(min_coord.x_val, max_coord.x_val + 1):
