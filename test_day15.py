@@ -4,7 +4,7 @@ import aoc
 import day15
 
 
-class TestDay13(unittest.TestCase):
+class TestDay15(unittest.TestCase):
 
     def test_part1_input(self):
         result = day15.part1(aoc.read_input('day15.input'))
