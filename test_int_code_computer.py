@@ -283,6 +283,24 @@ class TestIntCodeComputer(unittest.TestCase):
         memory = computer.dump()
         self.assertEqual(expected, memory)
 
+    def test_icc_step(self):
+        int_code = [
+            ICC.OUTPUT + ICC.MODE1_IMM, 50,  # Output 50
+            ICC.OUTPUT + ICC.MODE1_IMM, 60,  # Output 60
+            ICC.OUTPUT + ICC.MODE1_IMM, 70,  # Output 60
+        ]
+
+        input_stream = []
+        output_stream = []
+
+        computer = IntCodeComputer(int_code, input_stream, output_stream)
+        computer.step()
+        self.assertEqual([50], output_stream)
+        computer.step()
+        self.assertEqual([50, 60], output_stream)
+        computer.step()
+        self.assertEqual([50, 60, 70], output_stream)
+
     def test_icc_day2_part1_example1(self):
         int_code = [1, 0, 0, 0, 99]
         computer = IntCodeComputer(int_code)

@@ -30,6 +30,7 @@ class IntCodeComputer:
     LESS_THAN = 7
     EQUALS = 8
     ADJUST_BASE = 9
+    STEP = 98
     HALT = 99
 
     IS_DEST = 99
@@ -147,8 +148,11 @@ class IntCodeComputer:
     def is_halted(self):
         return self._halted
 
+    def step(self):
+        self.run(until=self.STEP)
+
     def run(self, until=HALT):
-        assert (until in {self.HALT, self.OUTPUT, self.INPUT})
+        assert (until in {self.HALT, self.STEP, self.OUTPUT, self.INPUT})
 
         self._output_generated = False
         self._halted = False
@@ -198,6 +202,9 @@ class IntCodeComputer:
 
             # Call the function that implements the opcode.
             config[1](self, parameters)
+
+            if until == self.STEP:
+                break
 
 
 if __name__ == "__main__":
