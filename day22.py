@@ -10,7 +10,7 @@ class DeckOfSpaceCards:
     _deal_with_increment_n_re = re.compile(r"deal with increment (\d+)")
 
     def __init__(self, size):
-        self._deck = deque([x for x in range(size)])
+        self._deck = deque(range(size))
 
     def shuffle(self, techniques):
         for technique in techniques:
@@ -32,7 +32,7 @@ class DeckOfSpaceCards:
 
             assert False
 
-    def get_card(self,position):
+    def get_card(self, position):
         return self._deck[position]
 
     def get_all_cards(self):
@@ -64,7 +64,6 @@ def part1(input_list):
 
 def part2(input_list):
     deck = DeckOfSpaceCards(119315717514047)
-    return None
     deck.shuffle(input_list)
     return deck.get_card(2020)
 
