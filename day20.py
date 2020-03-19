@@ -139,16 +139,16 @@ class Maze:
                     work_queue.clear()
                     break
 
-                elif tile is None:
+                if tile is None:
                     # This will happen if we try to exit when we are still at the entrance.  Treat
                     # like wall.
                     continue
 
-                elif tile == '#':
+                if tile == '#':
                     # Wall
                     continue
 
-                elif tile == '.':
+                if tile == '.':
                     # Move to next square.
                     work_queue.append(WorkEntry(location=new_location, steps=work_entry[1] + 1))
                     visited.add(new_location)
