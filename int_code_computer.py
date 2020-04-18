@@ -184,7 +184,7 @@ class IntCodeComputer:
                 if mode == IntCodeComputer.MODE_POS and IntCodeComputer.IS_DEST in config[0][pnum]:
                     parameters.append(immediate_value)
 
-                if mode == IntCodeComputer.MODE_RBASE and IntCodeComputer.IS_DEST in \
+                elif mode == IntCodeComputer.MODE_RBASE and IntCodeComputer.IS_DEST in \
                         config[0][pnum]:
                     parameters.append(self._rb + immediate_value)
 
