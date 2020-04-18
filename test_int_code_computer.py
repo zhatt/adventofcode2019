@@ -145,7 +145,7 @@ class TestIntCodeComputer(unittest.TestCase):
     def test_icc_jmp_if_true1(self):
         int_code = [
             ICC.JMP_IF_TRUE + ICC.MODE1_IMM + ICC.MODE2_IMM, 0, 7,  # 0 don't jump
-            ICC.MULT + ICC.MODE1_IMM + ICC.MODE2_IMM + ICC.MODE_POS, 1, 12, 8,  # 3 Store 12 to 8
+            ICC.MULT + ICC.MODE1_IMM + ICC.MODE2_IMM + ICC.MODE3_POS, 1, 12, 8,  # 3 Store 12 to 8
             ICC.HALT,  # 7
             0,  # 8
         ]
@@ -161,7 +161,7 @@ class TestIntCodeComputer(unittest.TestCase):
     def test_icc_jmp_if_true2(self):
         int_code = [
             ICC.JMP_IF_TRUE + ICC.MODE1_IMM + ICC.MODE2_IMM, 1, 7,  # 0 do jump
-            ICC.MULT + ICC.MODE1_IMM + ICC.MODE2_IMM + ICC.MODE_POS, 1, 12, 8,  # 3 Store 12 to 8
+            ICC.MULT + ICC.MODE1_IMM + ICC.MODE2_IMM + ICC.MODE3_POS, 1, 12, 8,  # 3 Store 12 to 8
             ICC.HALT,  # 7
             0,  # 8
         ]
@@ -176,7 +176,7 @@ class TestIntCodeComputer(unittest.TestCase):
     def test_icc_jmp_if_false1(self):
         int_code = [
             ICC.JMP_IF_FALSE + ICC.MODE1_IMM + ICC.MODE2_IMM, 1, 7,  # 0 don't jump
-            ICC.MULT + ICC.MODE1_IMM + ICC.MODE2_IMM + ICC.MODE_POS, 1, 12, 8,  # 3 Store 12 to 8
+            ICC.MULT + ICC.MODE1_IMM + ICC.MODE2_IMM + ICC.MODE3_POS, 1, 12, 8,  # 3 Store 12 to 8
             ICC.HALT,  # 7
             0,  # 8
         ]
@@ -192,7 +192,7 @@ class TestIntCodeComputer(unittest.TestCase):
     def test_icc_jmp_if_false2(self):
         int_code = [
             ICC.JMP_IF_FALSE + ICC.MODE1_IMM + ICC.MODE2_IMM, 0, 7,  # 0 do jump
-            ICC.MULT + ICC.MODE1_IMM + ICC.MODE2_IMM + ICC.MODE_POS, 1, 12, 8,  # 3 Store 12 to 8
+            ICC.MULT + ICC.MODE1_IMM + ICC.MODE2_IMM + ICC.MODE3_POS, 1, 12, 8,  # 3 Store 12 to 8
             ICC.HALT,  # 7
             0,  # 8
         ]
