@@ -21,7 +21,7 @@ class TestAoc(unittest.TestCase):
         self.assertEqual(aoc.Coord(1, 2), aoc.min_bound_coord(self.coord1, self.coord2, \
                                                               self.coord3))
 
-    def test_min_bound_coord2(self):
+    def test_max_bound_coord(self):
         self.assertEqual(aoc.Coord(1, 43), aoc.max_bound_coord(self.coord1, self.coord3))
         self.assertEqual(aoc.Coord(21, 43), aoc.max_bound_coord(self.coord1, self.coord2, \
                                                                 self.coord3))
