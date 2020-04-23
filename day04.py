@@ -9,7 +9,7 @@ def is_valid_password(number, exclude_triples=False):
     is_increasing = True
 
     # Add end of list sentinels.  These are correct for sequencing increase but won't form a
-    # double or triple. We wil insert the rest of the numbers to test between -1 and 10.
+    # double or triple. We will insert the rest of the numbers to test between -1 and 10.
     digits = [-1, 10, 11]
 
     while number > 0:
