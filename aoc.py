@@ -77,7 +77,7 @@ def coord_relation_negy(coord1, coord2):
         # Above is considered part of the to the right set.
         result = 1
     else:
-        # Above is considered part of the to the left set.
+        # Below is considered part of the to the left set.
         result = -1
 
     return result
